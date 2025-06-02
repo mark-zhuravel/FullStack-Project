@@ -1,0 +1,36 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/postgresql"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("POSTGRESQL_URL")
+}
+
+model Quest {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  difficulty  String
+  duration    Int      // в минутах
+  price       Float
+  maxPlayers  Int
+  minPlayers  Int
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  orders      Order[]  // Добавляем связь с заказами
+}
+
+model Order {
+  id              Int      @id @default(autoincrement())
+  userId          String   // Ссылка на MongoDB User._id
+  quest           Quest    @relation(fields: [questId], references: [id])
+  questId         String   // Изменили тип на String, так как id в Quest теперь String
+  numberOfPlayers Int
+  dateTime        DateTime
+  status          String   // например: pending, confirmed, completed
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+} 

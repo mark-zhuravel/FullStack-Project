@@ -1,0 +1,43 @@
+# Dependencies
+**/node_modules/
+**/.pnp
+**/.pnp.js
+
+# Environment
+**/.env
+**/.env.local
+**/.env.development.local
+**/.env.test.local
+**/.env.production.local
+
+# Testing
+**/coverage/
+
+# Production
+**/build/
+**/dist/
+**/.next/
+**/.nuxt/
+**/.output/
+
+# Misc
+**/.DS_Store
+**/.idea/
+**/.vscode/
+**/*.pem
+**/npm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*
+**/.pnpm-debug.log*
+
+# Backend specific
+quest-api/dist/
+quest-api/node_modules/
+quest-api/.env
+quest-api/generated/
+
+# Frontend specific
+ts-react-app-project/dist/
+ts-react-app-project/node_modules/
+ts-react-app-project/.env
+ts-react-app-project/build/ 
