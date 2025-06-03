@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import ArrowDownIcon from '../../assets/icons/ArrowDownIcon';
 
 interface User {
@@ -16,6 +17,7 @@ interface UserMenuProps {
 export const UserMenu: React.FC<UserMenuProps> = ({ user, onLogout }) => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -27,6 +29,11 @@ export const UserMenu: React.FC<UserMenuProps> = ({ user, onLogout }) => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  const handleOrdersClick = () => {
+    setIsOpen(false);
+    navigate('/orders');
+  };
 
   return (
     <div className="relative" ref={menuRef}>
@@ -44,6 +51,13 @@ export const UserMenu: React.FC<UserMenuProps> = ({ user, onLogout }) => {
             <p className="font-medium truncate">{user.name || 'Пользователь'}</p>
             <p className="text-xs text-gray-400 truncate">{user.email}</p>
           </div>
+          
+          <button
+            onClick={handleOrdersClick}
+            className="w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-[#F2890F] hover:text-white transition-colors cursor-pointer"
+          >
+            Мои заказы
+          </button>
           
           <button
             onClick={onLogout}

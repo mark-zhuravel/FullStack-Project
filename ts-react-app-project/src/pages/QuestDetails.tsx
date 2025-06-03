@@ -1,19 +1,40 @@
 import React from "react";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { quests } from "../data/quests";
 import LongLine from "../assets/icons/LongLine";
 import TimeIcon from "../assets/icons/TimeIcon";
 import PersonIcon from "../assets/icons/PersonIcon";
 import PuzzleIcon from "../assets/icons/PuzzleIcon";
 import BookingForm from "../components/form/BookingForm";
+import { questService } from "../services/questService";
+import { QuestDisplay, convertToQuestDisplay } from "../types/quest.types";
 
 const QuestDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [isBookingOpen, setBookingOpen] = useState(false);
+  const [quest, setQuest] = useState<QuestDisplay | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const quest = quests.find((q) => q.id === Number(id));
+  useEffect(() => {
+    const fetchQuest = async () => {
+      if (!id) return;
+      
+      try {
+        const data = await questService.getQuestById(id);
+        setQuest(convertToQuestDisplay(data));
+        setError(null);
+      } catch (err) {
+        setError("Не удалось загрузить информацию о квесте");
+        console.error("Error fetching quest:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchQuest();
+  }, [id]);
 
   useEffect(() => {
     if (quest?.image) {
@@ -21,7 +42,11 @@ const QuestDetails: React.FC = () => {
     }
   }, [quest]);
 
-  if (!quest) {
+  if (loading) {
+    return <div className="text-white text-center mt-12">Загрузка квеста...</div>;
+  }
+
+  if (error || !quest) {
     return (
       <div className="text-white text-xl font-medium text-center mt-[200px]">
         <p>Квест не найден 😔</p>
@@ -85,7 +110,12 @@ const QuestDetails: React.FC = () => {
         </button>
       </div>
 
-      {isBookingOpen && <BookingForm onClose={() => setBookingOpen(false)} />}
+      {isBookingOpen && (
+        <BookingForm 
+          onClose={() => setBookingOpen(false)} 
+          questId={quest.id}
+        />
+      )}
     </div>
   );
 };

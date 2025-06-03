@@ -5,7 +5,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("POSTGRESQL_URL")
+  url      = env("DATABASE_URL")
 }
 
 model Quest {
@@ -17,20 +17,27 @@ model Quest {
   price       Float
   maxPlayers  Int
   minPlayers  Int
+  category    String
+  imageUrl    String   // URL картинки
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  orders      Order[]  // Добавляем связь с заказами
+  orders      Order[]
+
+  @@map("quests")
 }
 
 model Order {
   id              Int      @id @default(autoincrement())
   userId          String   // Ссылка на MongoDB User._id
   quest           Quest    @relation(fields: [questId], references: [id])
-  questId         String   // Изменили тип на String, так как id в Quest теперь String
+  questId         String
   numberOfPlayers Int
   dateTime        DateTime
-  status          String   // например: pending, confirmed, completed
+  phone           String   // Контактный телефон
+  status          String   // pending, confirmed, completed
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+
+  @@map("orders")
 } 

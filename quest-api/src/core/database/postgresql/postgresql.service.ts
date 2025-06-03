@@ -1,10 +1,16 @@
 import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '../../../../generated/postgresql';
 
 @Injectable()
 export class PostgreSQLService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
   constructor() {
-    super();
+    super({
+      datasources: {
+        db: {
+          url: process.env.DATABASE_URL,
+        },
+      },
+    });
   }
 
   async onModuleInit() {
@@ -13,5 +19,14 @@ export class PostgreSQLService extends PrismaClient implements OnModuleInit, OnM
 
   async onModuleDestroy() {
     await this.$disconnect();
+  }
+
+  async checkHealth(): Promise<boolean> {
+    try {
+      await this.$connect();
+      return true;
+    } catch (error) {
+      return false;
+    }
   }
 } 

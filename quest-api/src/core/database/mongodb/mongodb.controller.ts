@@ -13,7 +13,7 @@ export class MongodbController {
   @Get('health')
   async checkHealth() {
     try {
-      // Проверяем подключение к базе данных, выполнив простой запрос
+      // Проверяем подключение к базе данных
       await this.mongodbService.user.findFirst();
       return {
         status: 'ok',
@@ -38,7 +38,6 @@ export class MongodbController {
         status: 'ok',
         stats: {
           users: usersCount,
-          // Здесь можно добавить другие статистические данные
         },
       };
     } catch (error) {

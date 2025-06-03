@@ -1,19 +1,35 @@
 import { Routes, Route, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
 import HomePage from "./pages/HomePage";
 import QuestDetails from "./pages/QuestDetails";
 import Contacts from "./pages/Contacts";
 import NotFound from "./pages/NotFound";
+import OrdersPage from "./pages/OrdersPage";
 import Header from "./components/header/Header";
 import Footer from "./components/footer/Footer";
-import { quests } from "./data/quests";
+import { questService } from "./services/questService";
+import { Quest } from "./types/quest.types";
 
 function App() {
   const location = useLocation();
+  const [questsData, setQuestsData] = useState<Quest[]>([]);
+
+  useEffect(() => {
+    const fetchQuests = async () => {
+      try {
+        const data = await questService.getAllQuests();
+        setQuestsData(data);
+      } catch (err) {
+        console.error("Error fetching quests:", err);
+      }
+    };
+    fetchQuests();
+  }, []);
 
   const getQuestBackground = () => {
     const id = location.pathname.split("/")[2];
-    const quest = quests.find((q) => q.id === Number(id));
-    return quest ? quest.image : null;
+    const quest = questsData.find((q) => q.id === id);
+    return quest ? quest.imageUrl : null;
   };
 
   const getContactsBackground = () => {
@@ -81,6 +97,7 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/quests/:id" element={<QuestDetails />} />
             <Route path="/contacts" element={<Contacts />} />
+            <Route path="/orders" element={<OrdersPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>

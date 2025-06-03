@@ -1,11 +1,20 @@
 import { Injectable, ConflictException, UnauthorizedException, NotFoundException } from '@nestjs/common';
 import { MongodbService } from 'src/core/database/mongodb/mongodb.service';
-import { CreateUserDto } from 'src/users/dto/create-user.dto';
-import { LoginUserDto } from 'src/users/dto/login-user.dto';
-import { User } from 'src/users/interfaces/user.interface';
+import { User } from './interfaces/user.interface';
+import { LoginResponseDto } from './dto/login-response.dto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { Prisma } from '@prisma/client';
+
+interface CreateUserData {
+  email: string;
+  password: string;
+  name: string;
+}
+
+interface LoginUserData {
+  email: string;
+  password: string;
+}
 
 @Injectable()
 export class UsersService {
@@ -14,22 +23,21 @@ export class UsersService {
     private jwtService: JwtService,
   ) {}
 
-  async create(createUserDto: CreateUserDto): Promise<Omit<User, 'password'>> {
+  async create(data: CreateUserData): Promise<Omit<User, 'password'>> {
     try {
-      // Проверяем, существует ли пользователь с таким email
       const existingUser = await this.prisma.user.findUnique({
-        where: { email: createUserDto.email },
+        where: { email: data.email },
       });
 
       if (existingUser) {
         throw new ConflictException('Пользователь с таким email уже существует');
       }
 
-      const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
+      const hashedPassword = await bcrypt.hash(data.password, 10);
       
       const user = await this.prisma.user.create({
         data: {
-          ...createUserDto,
+          ...data,
           password: hashedPassword,
           role: 'USER',
         },
@@ -45,9 +53,9 @@ export class UsersService {
     }
   }
 
-  async login(loginUserDto: LoginUserDto) {
+  async login(data: LoginUserData): Promise<LoginResponseDto> {
     const user = await this.prisma.user.findUnique({
-      where: { email: loginUserDto.email },
+      where: { email: data.email },
     });
 
     if (!user) {
@@ -55,7 +63,7 @@ export class UsersService {
     }
 
     const isPasswordValid = await bcrypt.compare(
-      loginUserDto.password,
+      data.password,
       user.password,
     );
 

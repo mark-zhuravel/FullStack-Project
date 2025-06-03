@@ -1,11 +1,11 @@
 import { FC } from "react";
-import { QuestProps } from "../data/quests";
+import { QuestDisplay } from "../types/quest.types";
 import { useNavigate } from "react-router-dom";
 import PersonIcon from "../assets/icons/PersonIcon";
 import PuzzleIcon from "../assets/icons/PuzzleIcon";
 import ShortLine from "../assets/icons/ShortLine";
 
-const QuestCard: FC<{ quest: QuestProps }> = ({ quest }) => {
+const QuestCard: FC<{ quest: QuestDisplay }> = ({ quest }) => {
   const navigate = useNavigate();
 
   const handleCardClick = () => {

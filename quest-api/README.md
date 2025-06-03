@@ -27,9 +27,54 @@
 
 ## Project setup
 
+1. Запустить базы данных:
 ```bash
-$ npm install
+docker-compose up -d
 ```
+
+2. Установить зависимости:
+```bash
+npm install
+```
+
+3. Применить миграции:
+```bash
+# Для PostgreSQL (квесты)
+npx prisma migrate deploy --schema=./prisma/postgresql.prisma
+
+# Для MongoDB (пользователи)
+npx prisma db push --schema=./prisma/schema.prisma
+```
+
+4. Запустить приложение:
+```bash
+npm run start:dev
+```
+
+## Prisma Studio
+
+Для просмотра данных в базах через UI:
+
+1. MongoDB (пользователи):
+```bash
+npx prisma studio --schema=./prisma/mongodb.prisma --port 5555
+# Доступно на http://localhost:5555
+```
+
+2. PostgreSQL (квесты и заказы):
+```bash
+npx prisma studio --schema=./prisma/postgresql.prisma --port 5556
+# Доступно на http://localhost:5556
+```
+
+## Структура базы данных
+
+### MongoDB
+- `users` - пользователи системы
+
+### PostgreSQL
+- `quests` - квесты
+- `orders` - заказы квестов
 
 ## Compile and run the project
 
