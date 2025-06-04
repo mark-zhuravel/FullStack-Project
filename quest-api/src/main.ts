@@ -10,9 +10,11 @@ async function bootstrap() {
   
   // Включаем CORS
   app.enableCors({
-    origin: environment.frontend.urls,
+    origin: true, // Разрешаем все origins в development
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    exposedHeaders: ['Authorization'],
   });
 
   // Включаем глобальную валидацию
@@ -20,6 +22,9 @@ async function bootstrap() {
   
   // Настраиваем раздачу статических файлов
   app.useStaticAssets(join(__dirname, '..', 'public'));
+  
+  // Добавляем глобальный префикс /api
+  app.setGlobalPrefix('api');
   
   await app.listen(process.env.PORT || 3000);
 }

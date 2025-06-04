@@ -31,7 +31,8 @@ export class OrdersService {
           numberOfPlayers: orderData.numberOfPlayers,
           dateTime: orderData.dateTime,
           status: OrderStatus.PENDING,
-          price: orderData.price
+          price: orderData.price,
+          phone: orderData.phone
         }
       });
 

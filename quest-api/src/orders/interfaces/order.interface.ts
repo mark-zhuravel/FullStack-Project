@@ -9,6 +9,7 @@ export interface IOrder {
   dateTime: Date;
   status: string;
   price: number;
+  phone: string;
   createdAt: Date;
   updatedAt: Date;
   quest?: Quest;
@@ -22,6 +23,7 @@ export interface IPrismaOrder {
   dateTime: Date;
   status: string;
   price: number;
+  phone: string;
   createdAt: Date;
   updatedAt: Date;
   quest?: Quest;
@@ -33,6 +35,7 @@ export interface ICreateOrder {
   numberOfPlayers: number;
   dateTime: Date;
   price: number;
+  phone: string;
 }
 
 export interface IUpdateOrder {
@@ -48,6 +51,7 @@ export function mapPrismaOrderToInterface(order: IPrismaOrder): IOrder {
     dateTime: order.dateTime,
     status: order.status,
     price: order.price,
+    phone: order.phone,
     createdAt: order.createdAt,
     updatedAt: order.updatedAt,
     quest: order.quest

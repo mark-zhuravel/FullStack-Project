@@ -39,6 +39,7 @@ model Order {
   dateTime        DateTime
   status          String   // pending, confirmed, completed
   price           Float    @default(0)
+  phone           String   // Добавляем поле для телефона
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 

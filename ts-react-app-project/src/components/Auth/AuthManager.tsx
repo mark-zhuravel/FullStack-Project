@@ -14,10 +14,6 @@ interface User {
   name?: string;
 }
 
-interface ApiError {
-  message: string;
-}
-
 export const AuthManager: React.FC = () => {
   const [authMode, setAuthMode] = useState<AuthMode>(null);
   const [error, setError] = useState<string | null>(null);

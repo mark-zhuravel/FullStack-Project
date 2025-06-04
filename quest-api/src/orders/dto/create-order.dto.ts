@@ -1,4 +1,4 @@
-import { IsString, IsNumber, IsDateString } from 'class-validator';
+import { IsString, IsNumber, IsDateString, Matches } from 'class-validator';
 
 export class CreateOrderDto {
   @IsString()
@@ -12,4 +12,8 @@ export class CreateOrderDto {
 
   @IsNumber()
   price: number;
+
+  @IsString()
+  @Matches(/\+?\d{10,15}/, { message: 'Введите корректный номер телефона' })
+  phone: string;
 } 

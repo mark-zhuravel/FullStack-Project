@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
+import { API_BASE_URL } from "../../config/api";
 import CloseIcon from "../../assets/icons/CloseIcon";
 import InputField from "./components/InputField";
 import ParticipantsInput from "./components/ParticipantsInput";
@@ -84,7 +85,7 @@ const BookingForm = ({ onClose, questId, questPrice }: BookingFormProps) => {
         return;
       }
 
-      const response = await fetch('http://localhost:3000/orders', {
+      const response = await fetch(`${API_BASE_URL}/orders`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -92,7 +93,6 @@ const BookingForm = ({ onClose, questId, questPrice }: BookingFormProps) => {
         },
         body: JSON.stringify({
           questId,
-          phone: data.phone,
           numberOfPlayers: Number(data.participants),
           dateTime: new Date(data.dateTime).toISOString(),
           price: questPrice * Number(data.participants)

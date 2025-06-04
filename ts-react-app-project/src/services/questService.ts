@@ -3,7 +3,9 @@ import { API_BASE_URL } from '../config/api';
 
 export const questService = {
   async getAllQuests(): Promise<Quest[]> {
-    const response = await fetch(`${API_BASE_URL}/quests`);
+    const response = await fetch(`${API_BASE_URL}/quests`, {
+      credentials: 'include'
+    });
     if (!response.ok) {
       throw new Error('Failed to fetch quests');
     }
@@ -11,7 +13,9 @@ export const questService = {
   },
 
   async getQuestById(id: string): Promise<Quest> {
-    const response = await fetch(`${API_BASE_URL}/quests/${id}`);
+    const response = await fetch(`${API_BASE_URL}/quests/${id}`, {
+      credentials: 'include'
+    });
     if (!response.ok) {
       throw new Error('Failed to fetch quest');
     }

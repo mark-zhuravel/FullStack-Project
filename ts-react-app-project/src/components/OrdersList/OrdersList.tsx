@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from '../../config/api';
 
 // Импортируем типы из бэкенда (нужно будет настроить path aliases)
 type OrderStatus = 'pending' | 'confirmed' | 'cancelled' | 'completed';
@@ -46,7 +47,7 @@ const OrdersList: React.FC = () => {
       }
 
       try {
-        const response = await fetch('http://localhost:3000/orders', {
+        const response = await fetch(`${API_BASE_URL}/orders`, {
           headers: {
             'Authorization': `Bearer ${token}`,
           },
