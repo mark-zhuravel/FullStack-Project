@@ -95,7 +95,8 @@ const BookingForm = ({ onClose, questId, questPrice }: BookingFormProps) => {
           questId,
           numberOfPlayers: Number(data.participants),
           dateTime: new Date(data.dateTime).toISOString(),
-          price: questPrice * Number(data.participants)
+          price: questPrice * Number(data.participants),
+          phone: data.phone
         }),
       });
 

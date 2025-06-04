@@ -3,8 +3,11 @@ import { API_BASE_URL } from '../config/api';
 
 export const questService = {
   async getAllQuests(): Promise<Quest[]> {
+    const token = localStorage.getItem('token');
     const response = await fetch(`${API_BASE_URL}/quests`, {
-      credentials: 'include'
+      headers: token ? {
+        'Authorization': `Bearer ${token}`
+      } : undefined
     });
     if (!response.ok) {
       throw new Error('Failed to fetch quests');
@@ -13,8 +16,11 @@ export const questService = {
   },
 
   async getQuestById(id: string): Promise<Quest> {
+    const token = localStorage.getItem('token');
     const response = await fetch(`${API_BASE_URL}/quests/${id}`, {
-      credentials: 'include'
+      headers: token ? {
+        'Authorization': `Bearer ${token}`
+      } : undefined
     });
     if (!response.ok) {
       throw new Error('Failed to fetch quest');
