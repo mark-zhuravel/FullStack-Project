@@ -57,11 +57,9 @@ export class QuestResponseDto {
   isActive: boolean;
 
   @Expose()
-  @Type(() => Date)
   createdAt: Date;
 
   @Expose()
-  @Type(() => Date)
   updatedAt: Date;
 
   @Expose()

@@ -1,41 +1,51 @@
 import { OrderStatus } from '../dto/update-order.dto';
 
 export interface IOrder {
-  id: number;
-  userId: string;
+  id: string;
   questId: string;
-  numberOfPlayers: number;
-  dateTime: Date;
-  status: OrderStatus;
-  createdAt: Date;
-  updatedAt: Date;
-  quest?: any;
-}
-
-export interface IPrismaOrder {
-  id: number;
   userId: string;
-  questId: string;
   numberOfPlayers: number;
   dateTime: Date;
   status: string;
+  price: number;
   createdAt: Date;
   updatedAt: Date;
-  quest?: any;
+}
+
+export interface IPrismaOrder {
+  id: string;
+  questId: string;
+  userId: string;
+  numberOfPlayers: number;
+  dateTime: Date;
+  status: string;
+  price: number;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface ICreateOrder {
   questId: string;
+  userId: string;
   numberOfPlayers: number;
-  dateTime: string | Date;
-  phone: string;
+  dateTime: Date;
+  price: number;
 }
 
 export interface IUpdateOrder {
-  status?: OrderStatus;
+  status: string;
 }
 
-export const mapPrismaOrderToInterface = (order: IPrismaOrder): IOrder => ({
-  ...order,
-  status: order.status as OrderStatus
-}); 
+export function mapPrismaOrderToInterface(order: IPrismaOrder): IOrder {
+  return {
+    id: order.id,
+    questId: order.questId,
+    userId: order.userId,
+    numberOfPlayers: order.numberOfPlayers,
+    dateTime: order.dateTime,
+    status: order.status,
+    price: order.price,
+    createdAt: order.createdAt,
+    updatedAt: order.updatedAt
+  };
+} 

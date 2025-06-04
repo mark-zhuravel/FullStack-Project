@@ -47,7 +47,9 @@ export class QuestsService {
       ...quest,
       orders: quest.orders.map(order => ({
         ...order,
-        status: order.status as OrderStatus
+        id: order.id.toString(),
+        status: order.status as OrderStatus,
+        price: quest.price * order.numberOfPlayers
       }))
     }));
   }
@@ -68,7 +70,9 @@ export class QuestsService {
       ...quest,
       orders: quest.orders.map(order => ({
         ...order,
-        status: order.status as OrderStatus
+        id: order.id.toString(),
+        status: order.status as OrderStatus,
+        price: quest.price * order.numberOfPlayers
       }))
     };
   }

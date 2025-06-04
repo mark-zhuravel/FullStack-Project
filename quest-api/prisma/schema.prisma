@@ -26,18 +26,21 @@ model Quest {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   orders      Order[]
+
+  @@map("quests")
 }
 
 model Order {
-  id        String      @id @default(uuid())
-  questId   String
-  quest     Quest       @relation(fields: [questId], references: [id])
-  userId    String
-  date      DateTime
-  time      String
-  players   Int
-  status    String
-  price     Float
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
+  id              String   @id @default(uuid())
+  userId          String   // Ссылка на MongoDB User._id
+  quest           Quest    @relation(fields: [questId], references: [id])
+  questId         String
+  numberOfPlayers Int
+  dateTime        DateTime
+  status          String   // pending, confirmed, completed
+  price           Float    @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("orders")
 } 

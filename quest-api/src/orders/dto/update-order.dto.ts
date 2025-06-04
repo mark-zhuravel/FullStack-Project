@@ -1,14 +1,13 @@
-import { IsEnum, IsOptional } from 'class-validator';
+import { IsString } from 'class-validator';
 
 export enum OrderStatus {
   PENDING = 'pending',
   CONFIRMED = 'confirmed',
-  CANCELLED = 'cancelled',
-  COMPLETED = 'completed'
+  COMPLETED = 'completed',
+  CANCELLED = 'cancelled'
 }
 
 export class UpdateOrderDto {
-  @IsOptional()
-  @IsEnum(OrderStatus)
-  status?: OrderStatus;
+  @IsString()
+  status: string;
 } 

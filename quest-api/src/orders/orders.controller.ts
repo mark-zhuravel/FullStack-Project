@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, ParseIntPipe, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, UseGuards } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
@@ -12,8 +12,10 @@ export class OrdersController {
 
   @Post()
   create(@GetUser() user: any, @Body() createOrderDto: CreateOrderDto) {
-    console.log('User from decorator:', user);
-    return this.ordersService.create(user.id, createOrderDto);
+    return this.ordersService.create({
+      ...createOrderDto,
+      userId: user.id
+    });
   }
 
   @Get()
@@ -22,21 +24,20 @@ export class OrdersController {
   }
 
   @Get(':id')
-  findOne(@GetUser('id') userId: string, @Param('id', ParseIntPipe) id: number) {
-    return this.ordersService.findOne(userId, id);
+  findOne(@Param('id') id: string) {
+    return this.ordersService.findOne(id);
   }
 
   @Patch(':id')
   update(
-    @GetUser('id') userId: string,
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id') id: string,
     @Body() updateOrderDto: UpdateOrderDto,
   ) {
-    return this.ordersService.update(userId, id, updateOrderDto);
+    return this.ordersService.update(id, updateOrderDto);
   }
 
   @Post(':id/cancel')
-  cancel(@GetUser('id') userId: string, @Param('id', ParseIntPipe) id: number) {
-    return this.ordersService.cancel(userId, id);
+  cancel(@Param('id') id: string) {
+    return this.ordersService.cancel(id);
   }
 } 

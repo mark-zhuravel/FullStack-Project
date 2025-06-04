@@ -7,125 +7,99 @@ import { ICreateOrder, IUpdateOrder, IOrder, IPrismaOrder, mapPrismaOrderToInter
 export class OrdersService {
   constructor(private readonly prisma: PostgreSQLService) {}
 
-  async create(userId: string, orderData: ICreateOrder): Promise<IOrder> {
-    // Проверяем существование и доступность квеста
-    const quest = await this.prisma.quest.findUnique({
-      where: { id: orderData.questId }
-    });
+  async create(orderData: ICreateOrder): Promise<IOrder> {
+    try {
+      // Проверяем существование квеста
+      const quest = await this.prisma.quest.findUnique({
+        where: { id: orderData.questId }
+      });
 
-    if (!quest) {
-      throw new NotFoundException('Quest not found');
-    }
-
-    if (!quest.isActive) {
-      throw new BadRequestException('Quest is not available for booking');
-    }
-
-    if (orderData.numberOfPlayers < quest.minPlayers || orderData.numberOfPlayers > quest.maxPlayers) {
-      throw new BadRequestException(`Number of players must be between ${quest.minPlayers} and ${quest.maxPlayers}`);
-    }
-
-    // Создаем заказ
-    const order = await this.prisma.order.create({
-      data: {
-        userId,
-        quest: {
-          connect: { id: orderData.questId }
-        },
-        numberOfPlayers: orderData.numberOfPlayers,
-        dateTime: new Date(orderData.dateTime),
-        status: OrderStatus.PENDING,
-        phone: orderData.phone
-      },
-      include: {
-        quest: true
+      if (!quest) {
+        throw new NotFoundException('Quest not found');
       }
-    });
 
-    return mapPrismaOrderToInterface(order as IPrismaOrder);
+      // Проверяем количество игроков
+      if (orderData.numberOfPlayers < quest.minPlayers || orderData.numberOfPlayers > quest.maxPlayers) {
+        throw new BadRequestException('Invalid number of players');
+      }
+
+      // Создаем заказ
+      const order = await this.prisma.order.create({
+        data: {
+          questId: orderData.questId,
+          userId: orderData.userId,
+          numberOfPlayers: orderData.numberOfPlayers,
+          dateTime: orderData.dateTime,
+          status: OrderStatus.PENDING,
+          price: orderData.price
+        }
+      });
+
+      return mapPrismaOrderToInterface(order);
+    } catch (error) {
+      if (error instanceof NotFoundException || error instanceof BadRequestException) {
+        throw error;
+      }
+      throw new BadRequestException('Failed to create order');
+    }
   }
 
-  async findAll(userId: string): Promise<IOrder[]> {
+  async findAll(userId?: string): Promise<IOrder[]> {
+    const where = userId ? { userId } : {};
+    
     const orders = await this.prisma.order.findMany({
-      where: {
-        userId: userId // Просто передаем userId как строку
-      },
-      include: {
-        quest: true
-      },
+      where,
       orderBy: {
         dateTime: 'desc'
       }
     });
 
-    return orders.map(order => mapPrismaOrderToInterface(order as IPrismaOrder));
+    return orders.map(order => mapPrismaOrderToInterface(order));
   }
 
-  async findOne(userId: string, id: number): Promise<IOrder> {
-    const order = await this.prisma.order.findFirst({
-      where: {
-        id,
-        userId
-      },
-      include: {
-        quest: true
-      }
+  async findOne(id: string): Promise<IOrder> {
+    const order = await this.prisma.order.findUnique({
+      where: { id }
     });
 
     if (!order) {
       throw new NotFoundException('Order not found');
     }
 
-    return mapPrismaOrderToInterface(order as IPrismaOrder);
+    return mapPrismaOrderToInterface(order);
   }
 
-  async update(userId: string, id: number, updateData: IUpdateOrder): Promise<IOrder> {
-    // Проверяем существование заказа
-    const order = await this.findOne(userId, id);
+  async update(id: string, updateOrderDto: IUpdateOrder): Promise<IOrder> {
+    const order = await this.prisma.order.findUnique({
+      where: { id }
+    });
 
-    // Проверяем возможность обновления статуса
-    if (updateData.status && !this.canUpdateStatus(order.status, updateData.status)) {
-      throw new BadRequestException('Invalid status transition');
+    if (!order) {
+      throw new NotFoundException('Order not found');
     }
 
     const updatedOrder = await this.prisma.order.update({
       where: { id },
-      data: updateData,
-      include: {
-        quest: true
-      }
+      data: { status: updateOrderDto.status }
     });
 
-    return mapPrismaOrderToInterface(updatedOrder as IPrismaOrder);
+    return mapPrismaOrderToInterface(updatedOrder);
   }
 
-  async cancel(userId: string, id: number): Promise<IOrder> {
-    const order = await this.findOne(userId, id);
+  async cancel(id: string): Promise<IOrder> {
+    const order = await this.prisma.order.findUnique({
+      where: { id }
+    });
 
-    if (order.status !== OrderStatus.PENDING && order.status !== OrderStatus.CONFIRMED) {
-      throw new BadRequestException('Can only cancel pending or confirmed orders');
+    if (!order) {
+      throw new NotFoundException('Order not found');
     }
 
     const cancelledOrder = await this.prisma.order.update({
       where: { id },
-      data: { status: OrderStatus.CANCELLED },
-      include: {
-        quest: true
-      }
+      data: { status: OrderStatus.CANCELLED }
     });
 
-    return mapPrismaOrderToInterface(cancelledOrder as IPrismaOrder);
-  }
-
-  private canUpdateStatus(currentStatus: string, newStatus: OrderStatus): boolean {
-    // Определяем разрешенные переходы статусов
-    const allowedTransitions: { [key: string]: OrderStatus[] } = {
-      [OrderStatus.PENDING]: [OrderStatus.CONFIRMED, OrderStatus.CANCELLED],
-      [OrderStatus.CONFIRMED]: [OrderStatus.COMPLETED, OrderStatus.CANCELLED],
-      [OrderStatus.CANCELLED]: [],
-      [OrderStatus.COMPLETED]: []
-    };
-
-    return allowedTransitions[currentStatus]?.includes(newStatus) ?? false;
+    return mapPrismaOrderToInterface(cancelledOrder);
   }
 } 
