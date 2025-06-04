@@ -1,9 +1,9 @@
 export const environment = {
   isDevelopment: process.env.NODE_ENV !== 'production',
   frontend: {
-    url: process.env.NODE_ENV === 'production' 
-      ? process.env.FRONTEND_URL 
-      : 'http://localhost:5173'
+    urls: process.env.NODE_ENV === 'production'
+      ? ['https://escape-room-eight-phi.vercel.app', 'https://escape-room-eight-phi.vercel.app/api']
+      : ['http://localhost:5173', 'http://localhost:3000']
   },
   database: {
     postgresql: process.env.DATABASE_URL,

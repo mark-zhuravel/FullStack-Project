@@ -10,7 +10,7 @@ async function bootstrap() {
   
   // Включаем CORS
   app.enableCors({
-    origin: environment.frontend.url,
+    origin: environment.frontend.urls,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
