@@ -56,6 +56,8 @@ export class QuestsService {
 
   async findOne(id: string): Promise<QuestResponse> {
     try {
+      console.log('Finding quest with id:', id);
+      
       const quest = await this.prisma.quest.findUnique({
         where: { id },
         include: {
@@ -63,11 +65,14 @@ export class QuestsService {
         },
       });
 
+      console.log('Found quest:', quest);
+
       if (!quest) {
+        console.log('Quest not found');
         throw new NotFoundException('Квест не найден');
       }
 
-      return {
+      const response = {
         ...quest,
         orders: quest.orders.map(order => ({
           ...order,
@@ -77,6 +82,9 @@ export class QuestsService {
           phone: order.phone || 'not_provided'
         }))
       };
+
+      console.log('Returning response:', response);
+      return response;
     } catch (error) {
       console.error('Error in findOne:', error);
       throw new NotFoundException('Квест не найден или произошла ошибка при его получении');

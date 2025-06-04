@@ -19,8 +19,9 @@ export class OrdersController {
   }
 
   @Get()
-  findAll(@GetUser('id') userId: string) {
-    return this.ordersService.findAll(userId);
+  findAll(@GetUser() user: any) {
+    console.log('User from token:', user);
+    return this.ordersService.findAll(user.sub || user.id);
   }
 
   @Get(':id')

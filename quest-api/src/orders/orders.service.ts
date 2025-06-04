@@ -47,6 +47,7 @@ export class OrdersService {
 
   async findAll(userId?: string): Promise<IOrder[]> {
     try {
+      console.log('Finding orders for userId:', userId);
       const where = userId ? { userId } : {};
       
       const orders = await this.prisma.order.findMany({
@@ -59,11 +60,16 @@ export class OrdersService {
         }
       });
 
-      return orders.map(order => ({
+      console.log('Found orders:', orders);
+
+      const mappedOrders = orders.map(order => ({
         ...mapPrismaOrderToInterface(order),
         quest: order.quest,
         phone: order.phone || 'not_provided'
       }));
+
+      console.log('Returning mapped orders:', mappedOrders);
+      return mappedOrders;
     } catch (error) {
       console.error('Error in findAll orders:', error);
       return []; // Возвращаем пустой массив вместо ошибки
