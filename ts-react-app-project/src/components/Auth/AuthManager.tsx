@@ -3,6 +3,7 @@ import { Modal } from '../Modal/Modal';
 import LoginForm from './LoginForm';
 import SignUpForm from './SignUpForm';
 import { UserMenu } from './UserMenu';
+import { authService } from '../../services/authService';
 
 type AuthMode = 'login' | 'signup' | null;
 
@@ -14,9 +15,7 @@ interface User {
 }
 
 interface ApiError {
-  statusCode: number;
   message: string;
-  error: string;
 }
 
 export const AuthManager: React.FC = () => {
@@ -31,26 +30,10 @@ export const AuthManager: React.FC = () => {
     }
   }, []);
 
-  const handleError = async (response: Response) => {
-    if (!response.ok) {
-      const errorData: ApiError = await response.json();
-      throw new Error(errorData.message || 'Произошла ошибка при обработке запроса');
-    }
-    return response.json();
-  };
-
   const handleLogin = async (email: string, password: string) => {
     try {
       setError(null);
-      const response = await fetch('http://localhost:3000/users/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await handleError(response);
+      const data = await authService.login(email, password);
       localStorage.setItem('token', data.access_token);
       localStorage.setItem('user', JSON.stringify(data.user));
       setUser(data.user);
@@ -64,15 +47,7 @@ export const AuthManager: React.FC = () => {
   const handleSignUp = async (name: string, email: string, password: string) => {
     try {
       setError(null);
-      const response = await fetch('http://localhost:3000/users/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ name, email, password }),
-      });
-
-      await handleError(response);
+      await authService.register(name, email, password);
       // После успешной регистрации выполняем вход
       await handleLogin(email, password);
     } catch (error) {
