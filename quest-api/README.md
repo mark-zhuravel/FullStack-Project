@@ -53,8 +53,6 @@ npm run start:dev
 
 ## Prisma Studio
 
-Для просмотра данных в базах через UI:
-
 1. MongoDB (пользователи):
 ```bash
 npx prisma studio --schema=./prisma/mongodb.prisma --port 5555
@@ -63,7 +61,7 @@ npx prisma studio --schema=./prisma/mongodb.prisma --port 5555
 
 2. PostgreSQL (квесты и заказы):
 ```bash
-npx prisma studio --schema=./prisma/postgresql.prisma --port 5556
+npx prisma studio --schema=./prisma/schema.prisma --port 5556
 # Доступно на http://localhost:5556
 ```
 
