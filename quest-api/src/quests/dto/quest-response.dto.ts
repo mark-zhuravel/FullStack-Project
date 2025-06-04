@@ -16,6 +16,9 @@ export class OrderResponseDto {
   @Expose()
   status: string;
 
+  @Expose()
+  phone: string;
+
   constructor(partial: Partial<OrderResponseDto>) {
     Object.assign(this, partial);
   }

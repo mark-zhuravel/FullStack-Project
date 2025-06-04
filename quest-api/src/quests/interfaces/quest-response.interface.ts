@@ -10,6 +10,7 @@ export interface QuestResponse extends Quest {
     dateTime: Date;
     status: OrderStatus;
     price: number;
+    phone: string;
     createdAt: Date;
     updatedAt: Date;
   }[];
