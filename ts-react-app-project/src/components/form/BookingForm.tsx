@@ -61,9 +61,10 @@ type BookingFormValues = z.infer<typeof bookingSchema>;
 interface BookingFormProps {
   onClose: () => void;
   questId: string;
+  questPrice: number;
 }
 
-const BookingForm = ({ onClose, questId }: BookingFormProps) => {
+const BookingForm = ({ onClose, questId, questPrice }: BookingFormProps) => {
   const {
     register,
     handleSubmit,
@@ -94,6 +95,7 @@ const BookingForm = ({ onClose, questId }: BookingFormProps) => {
           phone: data.phone,
           numberOfPlayers: Number(data.participants),
           dateTime: new Date(data.dateTime).toISOString(),
+          price: questPrice * Number(data.participants)
         }),
       });
 

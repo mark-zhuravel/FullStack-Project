@@ -114,6 +114,7 @@ const QuestDetails: React.FC = () => {
         <BookingForm 
           onClose={() => setBookingOpen(false)} 
           questId={quest.id}
+          questPrice={quest.price}
         />
       )}
     </div>

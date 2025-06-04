@@ -49,12 +49,18 @@ export class OrdersService {
     
     const orders = await this.prisma.order.findMany({
       where,
+      include: {
+        quest: true
+      },
       orderBy: {
         dateTime: 'desc'
       }
     });
 
-    return orders.map(order => mapPrismaOrderToInterface(order));
+    return orders.map(order => ({
+      ...mapPrismaOrderToInterface(order),
+      quest: order.quest
+    }));
   }
 
   async findOne(id: string): Promise<IOrder> {

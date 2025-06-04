@@ -24,6 +24,7 @@ export interface QuestDisplay {
   duration: string;
   image: string;
   description: string;
+  price: number;
 }
 
 // Функция для преобразования категорий
@@ -48,4 +49,5 @@ export const convertToQuestDisplay = (quest: Quest): QuestDisplay => ({
   duration: `${quest.duration} мин`,
   image: quest.imageUrl,
   description: quest.description,
+  price: quest.price
 }); 

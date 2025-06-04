@@ -1,4 +1,5 @@
 import { OrderStatus } from '../dto/update-order.dto';
+import { Quest } from '../../quests/interfaces/quest.interface';
 
 export interface IOrder {
   id: string;
@@ -10,6 +11,7 @@ export interface IOrder {
   price: number;
   createdAt: Date;
   updatedAt: Date;
+  quest?: Quest;
 }
 
 export interface IPrismaOrder {
@@ -22,6 +24,7 @@ export interface IPrismaOrder {
   price: number;
   createdAt: Date;
   updatedAt: Date;
+  quest?: Quest;
 }
 
 export interface ICreateOrder {
@@ -46,6 +49,7 @@ export function mapPrismaOrderToInterface(order: IPrismaOrder): IOrder {
     status: order.status,
     price: order.price,
     createdAt: order.createdAt,
-    updatedAt: order.updatedAt
+    updatedAt: order.updatedAt,
+    quest: order.quest
   };
 } 
