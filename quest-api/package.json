@@ -21,7 +21,8 @@
     "import-quests": "ts-node src/scripts/import-quests.ts",
     "clear-quests": "ts-node src/scripts/clear-quests.ts",
     "prisma:generate": "prisma generate --schema=./prisma/schema.prisma && prisma generate --schema=./prisma/mongodb.prisma",
-    "import-quests-prod": "ts-node src/scripts/import-quests-prod.ts"
+    "import-quests-prod": "ts-node src/scripts/import-quests-prod.ts",
+    "update-quest-ids": "ts-node src/scripts/update-quest-ids.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.1.2",
