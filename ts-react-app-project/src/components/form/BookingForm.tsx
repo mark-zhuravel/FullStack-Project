@@ -146,7 +146,8 @@ const BookingForm = ({ onClose, questId }: BookingFormProps) => {
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
           <InputField
             label="Контактный телефон"
-            register={register("phone")}
+            name="phone"
+            register={register}
             error={errors.phone?.message}
           />
           <ParticipantsInput

@@ -3,13 +3,14 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
+import { environment } from './config/environment';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   
   // Включаем CORS
   app.enableCors({
-    origin: 'http://localhost:5173', // URL нашего фронтенда чтоб корсы не ругались
+    origin: environment.frontend.url,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
@@ -20,6 +21,7 @@ async function bootstrap() {
   // Настраиваем раздачу статических файлов
   app.useStaticAssets(join(__dirname, '..', 'public'));
   
-  await app.listen(3000);
+  await app.listen(process.env.PORT || 3000);
 }
+
 bootstrap(); 

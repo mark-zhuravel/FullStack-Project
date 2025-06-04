@@ -1,0 +1,43 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/postgresql"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Quest {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  difficulty  String
+  duration    Int
+  price       Float
+  maxPlayers  Int
+  minPlayers  Int
+  category    String
+  imageUrl    String
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  orders      Order[]
+}
+
+model Order {
+  id        String      @id @default(uuid())
+  questId   String
+  quest     Quest       @relation(fields: [questId], references: [id])
+  userId    String
+  date      DateTime
+  time      String
+  players   Int
+  status    String
+  price     Float
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+} 

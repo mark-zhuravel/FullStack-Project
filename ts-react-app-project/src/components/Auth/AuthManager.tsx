@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Modal } from '../Modal/Modal';
-import { LoginForm } from './LoginForm';
-import { SignUpForm } from './SignUpForm';
+import LoginForm from './LoginForm';
+import SignUpForm from './SignUpForm';
 import { UserMenu } from './UserMenu';
 
 type AuthMode = 'login' | 'signup' | null;

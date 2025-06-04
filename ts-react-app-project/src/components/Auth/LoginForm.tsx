@@ -1,49 +1,51 @@
-import React, { useState } from 'react';
-import { useForm } from "react-hook-form";
+import { useForm } from 'react-hook-form';
+import InputField from '../form/components/InputField';
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import InputField from "../form/components/InputField";
 
 const loginSchema = z.object({
   email: z.string().email("Введите корректный email"),
   password: z.string().min(6, "Минимум 6 символов"),
 });
 
-type LoginFormValues = z.infer<typeof loginSchema>;
+type LoginFormData = z.infer<typeof loginSchema>;
 
 interface LoginFormProps {
-  onSubmit: (email: string, password: string) => void;
+  onSubmit: (email: string, password: string) => Promise<void>;
   onSignUpClick: () => void;
 }
 
-export const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, onSignUpClick }) => {
+export default function LoginForm({ onSubmit, onSignUpClick }: LoginFormProps) {
   const {
     register,
     handleSubmit,
     formState: { errors, isValid },
-  } = useForm<LoginFormValues>({
+  } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     mode: "onChange",
   });
 
-  const onSubmitForm = (data: LoginFormValues) => {
-    onSubmit(data.email, data.password);
+  const onSubmitForm = async (data: LoginFormData) => {
+    await onSubmit(data.email, data.password);
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmitForm)} className="flex flex-col gap-6">
       <InputField
         label="Email"
-        register={register("email")}
+        type="email"
+        name="email"
+        register={register}
         error={errors.email?.message}
       />
       <InputField
-        label="Пароль"
+        label="Password"
         type="password"
-        register={register("password")}
+        name="password"
+        register={register}
         error={errors.password?.message}
       />
-
+      
       <div className="flex flex-col gap-4">
         <button
           type="submit"
@@ -67,4 +69,4 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, onSignUpClick })
       </div>
     </form>
   );
-}; 
+} 

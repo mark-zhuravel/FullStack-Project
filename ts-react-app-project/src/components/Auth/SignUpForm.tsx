@@ -1,5 +1,4 @@
-import React from 'react';
-import { useForm } from "react-hook-form";
+import { useForm } from 'react-hook-form';
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import InputField from "../form/components/InputField";
@@ -17,7 +16,7 @@ interface SignUpFormProps {
   onLoginClick: () => void;
 }
 
-export const SignUpForm: React.FC<SignUpFormProps> = ({ onSubmit, onLoginClick }) => {
+export default function SignUpForm({ onSubmit, onLoginClick }: SignUpFormProps) {
   const {
     register,
     handleSubmit,
@@ -34,19 +33,22 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({ onSubmit, onLoginClick }
   return (
     <form onSubmit={handleSubmit(onSubmitForm)} className="flex flex-col gap-6">
       <InputField
-        label="Ваше Имя"
-        register={register("name")}
+        label="Name"
+        name="name"
+        register={register}
         error={errors.name?.message}
       />
       <InputField
         label="Email"
-        register={register("email")}
+        name="email"
+        register={register}
         error={errors.email?.message}
       />
       <InputField
-        label="Пароль"
+        label="Password"
         type="password"
-        register={register("password")}
+        name="password"
+        register={register}
         error={errors.password?.message}
       />
 
@@ -73,4 +75,4 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({ onSubmit, onLoginClick }
       </div>
     </form>
   );
-}; 
+} 
