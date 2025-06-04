@@ -55,26 +55,32 @@ export class QuestsService {
   }
 
   async findOne(id: string): Promise<QuestResponse> {
-    const quest = await this.prisma.quest.findUnique({
-      where: { id },
-      include: {
-        orders: true,
-      },
-    });
+    try {
+      const quest = await this.prisma.quest.findUnique({
+        where: { id },
+        include: {
+          orders: true,
+        },
+      });
 
-    if (!quest) {
-      throw new NotFoundException('Квест не найден');
+      if (!quest) {
+        throw new NotFoundException('Квест не найден');
+      }
+
+      return {
+        ...quest,
+        orders: quest.orders.map(order => ({
+          ...order,
+          id: order.id.toString(),
+          status: order.status as OrderStatus,
+          price: quest.price * order.numberOfPlayers,
+          phone: order.phone || 'not_provided'
+        }))
+      };
+    } catch (error) {
+      console.error('Error in findOne:', error);
+      throw new NotFoundException('Квест не найден или произошла ошибка при его получении');
     }
-
-    return {
-      ...quest,
-      orders: quest.orders.map(order => ({
-        ...order,
-        id: order.id.toString(),
-        status: order.status as OrderStatus,
-        price: quest.price * order.numberOfPlayers
-      }))
-    };
   }
 
   async update(id: string, data: UpdateQuestData): Promise<Quest> {
